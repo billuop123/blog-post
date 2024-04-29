@@ -95,7 +95,7 @@ let post=0
 
   if (req.body.author) await db.query("update post set author=$1 where id=$2",[req.body.author,req.params.id])
 
-
+await db.query("COMMIT");
   res.json(post);
 });
 app.use(
@@ -109,7 +109,9 @@ session({
 app.delete("/posts/delete/:id", async(req, res) => {
   try {
     const result = await db.query('DELETE FROM post WHERE id = $1', [req.params.id]);
+    await db.query("COMMIT");
     res.status(200).json({ message: 'Row deleted successfully' });
+   
   } catch (error) {
     res.status(500).json({ message: 'Error deleting row', error: error.message });
   }
